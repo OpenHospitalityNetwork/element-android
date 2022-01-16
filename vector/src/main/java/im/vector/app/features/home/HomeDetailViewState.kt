@@ -43,12 +43,15 @@ data class HomeDetailViewState(
         val incrementalSyncStatus: SyncStatusService.Status.IncrementalSyncStatus = SyncStatusService.Status.IncrementalSyncIdle,
         val pushCounter: Int = 0,
         val pstnSupportFlag: Boolean = false,
-        val forceDialPadTab: Boolean = false
+        val forceDialPadTab: Boolean = false,
+        val trustrootsWebViewSupportFlag: Boolean = true // @@Trustroots adding WebView
 ) : MavericksState {
     val showDialPadTab = forceDialPadTab || pstnSupportFlag
+    val showTrustrootsWebView = trustrootsWebViewSupportFlag // @@Trustroots adding WebView
 }
 
 sealed class HomeTab(@StringRes val titleRes: Int) {
     data class RoomList(val displayMode: RoomListDisplayMode) : HomeTab(displayMode.titleRes)
     object DialPad : HomeTab(R.string.call_dial_pad_title)
+    object TrustrootsWebView : HomeTab(R.string.trustroots_webview_title) // @@Trustroots adding WebView
 }

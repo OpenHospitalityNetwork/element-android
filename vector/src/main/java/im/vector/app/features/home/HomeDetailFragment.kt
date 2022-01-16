@@ -61,6 +61,9 @@ import org.matrix.android.sdk.api.session.room.model.RoomSummary
 import org.matrix.android.sdk.internal.crypto.model.rest.DeviceInfo
 import javax.inject.Inject
 
+// @@Trustroots imports for trustroots
+import im.vector.app.features.trustroots.TrusrootsWebViewFragment
+
 class HomeDetailFragment @Inject constructor(
         private val avatarRenderer: AvatarRenderer,
         private val colorProvider: ColorProvider,
@@ -146,6 +149,11 @@ class HomeDetailFragment @Inject constructor(
 
         viewModel.onEach(HomeDetailViewState::showDialPadTab) { showDialPadTab ->
             updateTabVisibilitySafely(R.id.bottom_action_dial_pad, showDialPadTab)
+        }
+
+        // @@Trustroots adding WebView
+        viewModel.onEach(HomeDetailViewState::showTrustrootsWebView) { showTrustrootsWebView ->
+            updateTabVisibilitySafely(R.id.bottom_action_trustroots_webview, showTrustrootsWebView)
         }
 
         viewModel.observeViewEvents { viewEvent ->
@@ -346,6 +354,7 @@ class HomeDetailFragment @Inject constructor(
                 R.id.bottom_action_people       -> HomeTab.RoomList(RoomListDisplayMode.PEOPLE)
                 R.id.bottom_action_rooms        -> HomeTab.RoomList(RoomListDisplayMode.ROOMS)
                 R.id.bottom_action_notification -> HomeTab.RoomList(RoomListDisplayMode.NOTIFICATIONS)
+                R.id.bottom_action_trustroots_webview -> HomeTab.TrustrootsWebView // @@Trustroots adding WebView
                 else                            -> HomeTab.DialPad
             }
             viewModel.handle(HomeDetailAction.SwitchTab(tab))
@@ -391,6 +400,10 @@ class HomeDetailFragment @Inject constructor(
                     is HomeTab.DialPad  -> {
                         add(R.id.roomListContainer, createDialPadFragment(), fragmentTag)
                     }
+                    // @@Trustroots adding WebView
+                    is HomeTab.TrustrootsWebView  -> {
+                        add(R.id.roomListContainer, createTrustrootsWebViewFragment(), fragmentTag)
+                    }
                 }
             } else {
                 if (tab is HomeTab.DialPad) {
@@ -411,6 +424,11 @@ class HomeDetailFragment @Inject constructor(
             }
             applyCallback()
         }
+    }
+    // @@Trustroots adding WebView
+    private fun createTrustrootsWebViewFragment(): Fragment {
+        val fragment = childFragmentManager.fragmentFactory.instantiate(vectorBaseActivity.classLoader, TrusrootsWebViewFragment::class.java.name)
+        return (fragment as TrusrootsWebViewFragment)
     }
 
     private fun updateTabVisibilitySafely(tabId: Int, isVisible: Boolean) {
@@ -466,6 +484,7 @@ class HomeDetailFragment @Inject constructor(
 
     private fun HomeTab.toMenuId() = when (this) {
         is HomeTab.DialPad  -> R.id.bottom_action_dial_pad
+        is HomeTab.TrustrootsWebView  -> R.id.bottom_action_trustroots_webview // @@Trustroots adding WebView
         is HomeTab.RoomList -> when (displayMode) {
             RoomListDisplayMode.PEOPLE -> R.id.bottom_action_people
             RoomListDisplayMode.ROOMS  -> R.id.bottom_action_rooms

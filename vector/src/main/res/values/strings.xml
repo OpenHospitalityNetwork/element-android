@@ -3380,6 +3380,7 @@
     <string name="call_dial_pad_title">Dial pad</string>
     <string name="call_dial_pad_lookup_error">"There was an error looking up the phone number"</string>
 
+    <string name="trustroots_webview_title">Main page</string>
 
     <string name="call_only_active">Active call (%1$s)</string>
     <plurals name="call_only_paused">
